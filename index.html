@@ -72,10 +72,8 @@
             var deltaTimes = zip(init(timestamps), tail(timestamps)).map(function (pair) {
                 return pair[1] - pair[0];
             });
-
             var averageDeltaTime = mean(deltaTimes);
             var bpm = 60000 / averageDeltaTime;
-
             return bpm;
         }
 
@@ -89,12 +87,12 @@
             methods: {
                 beat: function () {
                     this.beats.push(new Date());
-                    this.beats = this.beats.slice(Math.max(0, this.beats.length - this.mode), this.beats.length);
                     if (this.beats.length == this.mode) {
                         var timestamps = this.beats.map(function (date) {
                             return date.getTime();
                         });
                         this.bpm = calculateBPM(timestamps);
+                        this.beats.shift();
                     }
                 },
                 clearBeats: function () {
