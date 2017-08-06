@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <h1 class="ui center aligned header">Beats Measurer</h1>
+    <h1 class="ui center aligned header">BPM Measurer</h1>
     <br>
     <br>
     <br>
@@ -28,7 +28,7 @@
             <br>
             <div class="ui statistic">
                 <div class="value">
-                    {{Math.round(bmp*100)/100}}
+                    {{Math.round(bpm*100)/100}}
                 </div>
                 <div class="label">
                     Beats Per Minute
@@ -74,9 +74,9 @@
             });
 
             var averageDeltaTime = mean(deltaTimes);
-            var bmp = 60000 / averageDeltaTime;
+            var bpm = 60000 / averageDeltaTime;
 
-            return bmp;
+            return bpm;
         }
 
         var app = new Vue({
@@ -84,7 +84,7 @@
             data: {
                 mode: 2,
                 beats: [],
-                bmp: 0
+                bpm: 0
             },
             methods: {
                 beat: function () {
@@ -94,12 +94,12 @@
                         var timestamps = this.beats.map(function (date) {
                             return date.getTime();
                         });
-                        this.bmp = calculateBPM(timestamps);
+                        this.bpm = calculateBPM(timestamps);
                     }
                 },
                 clearBeats: function () {
                     this.beats = [];
-                    this.bmp = 0;
+                    this.bpm = 0;
                 },
             }
         });
