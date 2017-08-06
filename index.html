@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Beat Measurer</title>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.2.11/semantic.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1 class="ui center aligned header">Beats Measurer</h1>
+    <br>
+    <br>
+    <br>
+    <div class="ui text container" id="app">
+        <center>
+            <span>Count Every </span>
+            <select v-model="mode" @change=clearBeats>
+            <option selected value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+            <span> Beats.</span>
+            <br>
+            <br>
+            <br>
+            <div class="ui statistic">
+                <div class="value">
+                    {{Math.round(bmp*100)/100}}
+                </div>
+                <div class="label">
+                    Beats Per Minute
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <button class="ui secondary button" @click=beat>
+            Beat
+            </button>
+            <button class="ui secondary button" @click=clearBeats>
+            Reset
+            </button>
+        </center>
+    </div>
+
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <script>
+        function init(arr) {
+            return arr.slice(0, arr.length - 1);
+        }
+
+        function tail(arr) {
+            return arr.slice(1, arr.length);
+        }
+
+        function zip(arr1, arr2) {
+            return arr1.map(function (v, i) {
+                return [v, arr2[i]];
+            });
+        }
+
+        function mean(arr) {
+            return arr.reduce(function (acc, v) {
+                return acc + v;
+            }) / arr.length;
+        }
+
+        function calculateBPM(timestamps) {
+            var deltaTimes = zip(init(timestamps), tail(timestamps)).map(function (pair) {
+                return pair[1] - pair[0];
+            });
+
+            var averageDeltaTime = mean(deltaTimes);
+            var bmp = 60000 / averageDeltaTime;
+
+            return bmp;
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                mode: 2,
+                beats: [],
+                bmp: 0
+            },
+            methods: {
+                beat: function () {
+                    this.beats.push(new Date());
+                    this.beats = this.beats.slice(Math.max(0, this.beats.length - this.mode), this.beats.length);
+                    if (this.beats.length == this.mode) {
+                        var timestamps = this.beats.map(function (date) {
+                            return date.getTime();
+                        });
+                        this.bmp = calculateBPM(timestamps);
+                    }
+                },
+                clearBeats: function () {
+                    this.beats = [];
+                    this.bmp = 0;
+                },
+            }
+        });
+    </script>
+</body>
+
+</html>
